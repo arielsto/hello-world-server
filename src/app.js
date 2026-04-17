@@ -1,5 +1,6 @@
 const express = require('express');
 const { formatGreeting } = require('./greetings');
+const { name, version } = require('../package.json');
 
 const app = express();
 
@@ -9,6 +10,10 @@ app.get('/', (req, res) => {
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() });
+});
+
+app.get('/version', (req, res) => {
+  res.json({ name, version });
 });
 
 app.get('/greet/:name', (req, res) => {
