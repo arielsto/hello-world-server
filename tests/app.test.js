@@ -27,6 +27,14 @@ describe('HTTP routes (integration)', () => {
     expect(res.body.error).toBe('name must be a non-empty string');
   });
 
+  test('GET /version responds with package name and version', async () => {
+    const res = await request(app).get('/version');
+    expect(res.status).toBe(200);
+    expect(res.body.name).toBe('hello-world-server');
+    expect(typeof res.body.version).toBe('string');
+    expect(res.body.version.length).toBeGreaterThan(0);
+  });
+
   test('GET /unknown-route responds with 404', async () => {
     const res = await request(app).get('/this-does-not-exist');
     expect(res.status).toBe(404);
