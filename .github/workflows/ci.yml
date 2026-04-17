@@ -1,0 +1,40 @@
+name: CI
+
+# When this workflow runs:
+#   - every push to main or develop
+#   - every pull request targeting main or develop
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    name: Test on Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+
+    # Single-entry matrix today; easy to add more Node versions later.
+    strategy:
+      matrix:
+        node-version: ['22']
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          # Cache ~/.npm across runs for faster installs.
+          cache: 'npm'
+
+      # `npm ci` is the CI-safe install: strict, fast, reproducible.
+      # Unlike `npm install`, it requires package-lock.json to match
+      # package.json exactly and never mutates the lockfile.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
